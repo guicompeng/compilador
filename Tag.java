@@ -3,18 +3,14 @@ public enum Tag {
     END_OF_FILE,
     AND,
     OR,
-    TRUE,
-    FALSE,
     IF,
     ELSE,
+
     // Palavras reservadas
-    PRG,
-    BEG,
-    END,
-    TYPE,
+    CLASS,
     INT,
-    CHAR,
-    BOOL,
+    STRING,
+    FLOAT,
 
     // Operadores e pontuação
     EQ,
@@ -23,6 +19,5 @@ public enum Tag {
     NE,
 
     // Outros tokens
-    NUM,
     ID,
 }

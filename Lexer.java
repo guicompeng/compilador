@@ -22,13 +22,11 @@ public class Lexer {
             throw e;
         }
         // Insere palavras reservadas na HashTable
+        reserve(new Word("class", Tag.CLASS));
         reserve(new Word("if", Tag.IF));
-        reserve(new Word("program", Tag.PRG));
-        reserve(new Word("begin", Tag.BEG));
-        reserve(new Word("end", Tag.END));
-        reserve(new Word("type", Tag.TYPE));
         reserve(new Word("int", Tag.INT));
-
+        reserve(new Word("float", Tag.FLOAT));
+        reserve(new Word("string", Tag.STRING));
     }
 
     /* Lê o próximo caractere do arquivo */
@@ -51,14 +49,22 @@ public class Lexer {
         return true;
     }
 
-    private void erroTokenNaoEncontrado() throws IOException {
-        System.out.println("Erro léxico na linha " + line);
+    private Word erroTokenNaoEncontrado() throws IOException {
+        String lexemaInvalido = "";
+
+        while(EOF == false && ch != '\n' && ch != ' ' && ch != '\t') {
+            lexemaInvalido += ch;
+            readch();
+        }
+        System.out.println("Erro léxico na linha " + line + ". Lexema inválido: " + lexemaInvalido);
+        if(EOF) return Word.EOF;
+        else return new Word(lexemaInvalido, Tag.INVALID_TOKEN);
     }
 
     public Token scan() throws IOException {
         // Se for fim de arquivo
         if(EOF) return Word.EOF;
-
+        
         // Desconsidera delimitadores na entrada
         for (;; readch()) {
             if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\b')
@@ -69,43 +75,41 @@ public class Lexer {
                 break;
         }
 
+        // Se for fim de arquivo
+        if(EOF) return Word.EOF;
+
         switch (ch) {
             // Operadores
             case '&':
                 if (readch('&')) {
                     return Word.and;
                 } else {
-                    this.erroTokenNaoEncontrado();
-                    return null;
+                    return this.erroTokenNaoEncontrado();
                 }
             case '|':
                 if (readch('|'))
                     return Word.or;
                 else {
-                    this.erroTokenNaoEncontrado();
-                    return null;
+                    return this.erroTokenNaoEncontrado();
                 }
             case '=':
                 if (readch('='))
                     return Word.eq;
                 else {
-                    this.erroTokenNaoEncontrado();
-                    return null;
+                    return this.erroTokenNaoEncontrado();
                 }
 
             case '<':
                 if (readch('='))
                     return Word.le;
                 else {
-                    this.erroTokenNaoEncontrado();
-                    return null;
+                    return this.erroTokenNaoEncontrado();
                 }
             case '>':
                 if (readch('='))
                     return Word.ge;
                 else {
-                    this.erroTokenNaoEncontrado();
-                    return null;
+                    return this.erroTokenNaoEncontrado();
                 }
         }
         // Números
@@ -115,7 +119,7 @@ public class Lexer {
                 value = 10 * value + Character.digit(ch, 10);
                 readch();
             } while (Character.isDigit(ch));
-            return new Num(value);
+            return new Float(value);
         }
 
         // Identificadores
@@ -133,9 +137,7 @@ public class Lexer {
             words.put(s, w);
             return w;
         }
-
-        // Caracteres não especificados
-        this.erroTokenNaoEncontrado();
-        return null;
+        
+        return this.erroTokenNaoEncontrado();
     }
 }
