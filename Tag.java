@@ -18,8 +18,11 @@ public enum Tag {
 
     // Operadores e pontuação
     SEMICOLON,
-    OPEN_BRACKET,
-    CLOSE_BRACKET,
+    COMMA,
+    OPEN_ROUND_BRACKET,
+    CLOSE_ROUND_BRACKET,
+    OPEN_CURLY_BRACKET,
+    CLOSE_CURLY_BRACKET,
     ASSIGN,
     NOT,
     LESS,
@@ -28,8 +31,12 @@ public enum Tag {
     NOT_EQUAL,
     LESS_EQUAL,
     GREATER_EQUAL,
-    OP_DIVISION,
+    OP_SUM,
+    OP_SUB,
+    OP_MUL,
+    OP_DIV,
 
     // Outros tokens
     ID,
+    LITERAL,
 }

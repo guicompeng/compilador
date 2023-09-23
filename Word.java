@@ -4,8 +4,11 @@ public class Word extends Token {
     public static final Word AND = new Word("&&", Tag.AND);
     public static final Word OR = new Word("||", Tag.OR);
     public static final Word SEMICOLON = new Word(";", Tag.SEMICOLON);
-    public static final Word OPEN_BRACKET = new Word("{", Tag.OPEN_BRACKET);
-    public static final Word CLOSE_BRACKET = new Word("}", Tag.CLOSE_BRACKET);
+    public static final Word COMMA = new Word(",", Tag.COMMA);
+    public static final Word OPEN_ROUND_BRACKET = new Word("(", Tag.OPEN_ROUND_BRACKET);
+    public static final Word CLOSE_ROUND_BRACKET = new Word(")", Tag.CLOSE_ROUND_BRACKET);
+    public static final Word OPEN_CURLY_BRACKET = new Word("{", Tag.OPEN_CURLY_BRACKET);
+    public static final Word CLOSE_CURLY_BRACKET = new Word("}", Tag.CLOSE_CURLY_BRACKET);
     public static final Word ASSIGN = new Word("=", Tag.ASSIGN);
     public static final Word NOT = new Word("!", Tag.NOT);
     public static final Word LESS = new Word("<", Tag.LESS);
@@ -15,7 +18,12 @@ public class Word extends Token {
     public static final Word LESS_EQUAL = new Word("<=", Tag.LESS_EQUAL);
     public static final Word GREATER_EQUAL = new Word(">=", Tag.GREATER_EQUAL);
 
-    public static final Word OP_DIVISION = new Word("/", Tag.OP_DIVISION);
+    public static final Word OP_SUM = new Word("+", Tag.OP_SUM);
+    public static final Word OP_SUB = new Word("-", Tag.OP_SUB);
+    public static final Word OP_MUL = new Word("*", Tag.OP_MUL);
+    public static final Word OP_DIV = new Word("/", Tag.OP_DIV);
+
+
 
     public Word(String s, Tag tag) {
         super(tag);

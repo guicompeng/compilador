@@ -109,13 +109,13 @@ public class Lexer {
                 if (readch('='))
                     return Word.LESS_EQUAL;
                 else {
-                    return this.erroTokenNaoEncontrado();
+                    return Word.LESS;
                 }
             case '>':
                 if (readch('='))
                     return Word.GREATER_EQUAL;
                 else {
-                    return this.erroTokenNaoEncontrado();
+                    return Word.GREATER;
                 }
             case '/':
                 readch();
@@ -145,17 +145,45 @@ public class Lexer {
                 }
                 // operador de divisao
                 else {
-                    return Word.OP_DIVISION;
+                    return Word.OP_DIV;
                 }
+            case '"':
+                String str = "";
+                readch();
+                while(ch != '"') { // TODO: tambem deveria haver ch != '\n' ?
+                    if(EOF) return Word.EOF;
+                    str += ch;
+                    readch();
+                }
+                readch();
+                return new Word(str, Tag.LITERAL);
+            case '(':
+                readch();
+                return Word.OPEN_ROUND_BRACKET;
+            case ')':
+                readch();
+                return Word.CLOSE_ROUND_BRACKET;
             case '{':
                 readch();
-                return Word.OPEN_BRACKET;
+                return Word.OPEN_CURLY_BRACKET;
             case '}':
                 readch();
-                return Word.CLOSE_BRACKET;
+                return Word.CLOSE_CURLY_BRACKET;
             case ';':
                 readch();
                 return Word.SEMICOLON;
+            case ',':
+                readch();
+                return Word.COMMA;
+            case '+':
+                readch();
+                return Word.OP_SUM;
+            case '-':
+                readch();
+                return Word.OP_SUB;
+            case '*':
+                readch();
+                return Word.OP_MUL;
                 
         }
         // Números
