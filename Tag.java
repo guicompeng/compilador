@@ -11,12 +11,24 @@ public enum Tag {
     INT,
     STRING,
     FLOAT,
+    DO,
+    WHILE,
+    READ,
+    WRITE,
 
     // Operadores e pontuação
-    EQ,
-    GE,
-    LE,
-    NE,
+    SEMICOLON,
+    OPEN_BRACKET,
+    CLOSE_BRACKET,
+    ASSIGN,
+    NOT,
+    LESS,
+    GREATER,
+    EQUAL,
+    NOT_EQUAL,
+    LESS_EQUAL,
+    GREATER_EQUAL,
+    OP_DIVISION,
 
     // Outros tokens
     ID,

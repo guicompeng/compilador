@@ -1,9 +1,9 @@
 classe Teste3
 /** Verificando fluxo de controle
+// FDSFDS FDSFDSFDS FDSFD
 Programa com if e while aninhados **/
-
     int i;
-    int media, soma;
+    int media / soma;
     {
         soma = 0;
 

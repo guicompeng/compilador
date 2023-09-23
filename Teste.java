@@ -6,7 +6,7 @@ public class Teste {
         Token token;
         do {
             token = lexer.scan();
-            if(token != null) System.out.println("Token: " + token.getToken().toString() + " - Lexema: " + token.getLexeme());
+            if(token != null) System.out.println(token.getToken().toString() + "\t" + token.getLexeme());
         } while(token.getToken() != Tag.END_OF_FILE);
     }
 }

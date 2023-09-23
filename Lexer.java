@@ -27,6 +27,10 @@ public class Lexer {
         reserve(new Word("int", Tag.INT));
         reserve(new Word("float", Tag.FLOAT));
         reserve(new Word("string", Tag.STRING));
+        reserve(new Word("do", Tag.DO));
+        reserve(new Word("while", Tag.WHILE));
+        reserve(new Word("read", Tag.READ));
+        reserve(new Word("write", Tag.WRITE));
     }
 
     /* Lê o próximo caractere do arquivo */
@@ -52,27 +56,30 @@ public class Lexer {
     private Word erroTokenNaoEncontrado() throws IOException {
         String lexemaInvalido = "";
 
-        while(EOF == false && ch != '\n' && ch != ' ' && ch != '\t') {
-            lexemaInvalido += ch;
-            readch();
+        // Se o token nao for encontrado, todos caracteres para frente (ate achar um espaco em branco) sera considerado parte do token invalido
+        while (true) {
+            if (Character.isWhitespace(ch)) {
+                break;
+            } else {
+                lexemaInvalido += ch;
+                readch();
+                if(EOF) break;
+            }
         }
         System.out.println("Erro léxico na linha " + line + ". Lexema inválido: " + lexemaInvalido);
         if(EOF) return Word.EOF;
         else return new Word(lexemaInvalido, Tag.INVALID_TOKEN);
     }
 
-    public Token scan() throws IOException {
-        // Se for fim de arquivo
-        if(EOF) return Word.EOF;
-        
+    public Token scan() throws IOException {        
         // Desconsidera delimitadores na entrada
-        for (;; readch()) {
-            if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\b')
-                continue;
-            else if (ch == '\n')
-                line++; // conta linhas
-            else
+        while (true) {
+            if (Character.isWhitespace(ch)) {
+                if (ch == '\n') line++; // conta linhas
+                readch();
+            } else {
                 break;
+            }
         }
 
         // Se for fim de arquivo
@@ -82,35 +89,74 @@ public class Lexer {
             // Operadores
             case '&':
                 if (readch('&')) {
-                    return Word.and;
+                    return Word.AND;
                 } else {
                     return this.erroTokenNaoEncontrado();
                 }
             case '|':
                 if (readch('|'))
-                    return Word.or;
+                    return Word.OR;
                 else {
                     return this.erroTokenNaoEncontrado();
                 }
             case '=':
                 if (readch('='))
-                    return Word.eq;
+                    return Word.EQUAL;
                 else {
-                    return this.erroTokenNaoEncontrado();
+                    return Word.ASSIGN;
                 }
-
             case '<':
                 if (readch('='))
-                    return Word.le;
+                    return Word.LESS_EQUAL;
                 else {
                     return this.erroTokenNaoEncontrado();
                 }
             case '>':
                 if (readch('='))
-                    return Word.ge;
+                    return Word.GREATER_EQUAL;
                 else {
                     return this.erroTokenNaoEncontrado();
                 }
+            case '/':
+                readch();
+                // comentario com mais de uma linha
+                if (ch == '*') {
+                    ch = ' '; // limpar o '*', para nao interferir como o primeiro '*' quando verifica o encerramento do comentario
+                    while(true) {
+                        char anterior = ch;
+                        readch();
+                        if(anterior == '*' && ch == '/') {
+                            readch();
+                            break;
+                        }
+                        if(EOF) return Word.EOF;
+                        if(ch == '\n') line++;
+                    }
+                    return this.scan(); // chama recursivamente o proximo token
+                }
+                // comentario em uma linha
+                else if(ch == '/') {
+                    // desconsiderar tudo enquanto nao encontrar a proxima linha ou EOF
+                    while(!readch('\n')) {
+                        if(EOF) return Word.EOF;
+                    }
+                    line++; // somar uma linha, pois acabou o comentario
+                    return this.scan(); // chama recursivamente o proximo token
+                }
+                // operador de divisao
+                else {
+                    return Word.OP_DIVISION;
+                }
+            case '{':
+                readch();
+                return Word.OPEN_BRACKET;
+            case '}':
+                readch();
+                return Word.CLOSE_BRACKET;
+            case ';':
+                readch();
+                return Word.SEMICOLON;
+                
         }
         // Números
         if (Character.isDigit(ch)) {
@@ -121,7 +167,6 @@ public class Lexer {
             } while (Character.isDigit(ch));
             return new Float(value);
         }
-
         // Identificadores
         if (Character.isLetter(ch)) {
             StringBuffer sb = new StringBuffer();
