@@ -3,7 +3,7 @@
 ## Trabalho compilador
 
 Para executar:
-``````
+```
 java -jar AnalisadorLexico.jar testes/1.txt
 ```
 
