@@ -1,8 +1,9 @@
-public class Int extends Token {
-    public final int value;
+package src;
+public class Float extends Token {
+    public final double value;
 
-    public Int(int value) {
-        super(Tag.INT);
+    public Float(double value) {
+        super(Tag.FLOAT);
         this.value = value;
     }
 

@@ -1,3 +1,4 @@
+package src;
 public class Word extends Token {
     private String lexeme = "";
     public static final Word EOF = new Word("", Tag.END_OF_FILE);

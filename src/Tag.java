@@ -1,3 +1,4 @@
+package src;
 public enum Tag {
     INVALID_TOKEN,
     END_OF_FILE,

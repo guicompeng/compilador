@@ -10,6 +10,6 @@ java -jar AnalisadorLexico.jar testes/1.txt
 
 Para compilar:
 ```
-javac *.java
-jar cvfm AnalisadorLexico.jar MANIFEST.MF *.class 
+javac src/*.java
+jar cvfm AnalisadorLexico.jar MANIFEST.MF src/*.class 
 ```
