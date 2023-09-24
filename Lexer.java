@@ -13,6 +13,14 @@ public class Lexer {
         words.put(w.getLexeme(), w); // lexema é a chave para entrada na HashTable
     }
 
+    public void printTabelaSimbolos() {
+        for (Enumeration<Object> keys = words.keys(); keys.hasMoreElements();) {
+            String key = (String) keys.nextElement();
+            Word word = (Word) words.get(key);
+            System.out.println(key);
+        }
+    }
+
     /* Método construtor */
     public Lexer(String fileName) throws FileNotFoundException {
         try {
