@@ -5,7 +5,8 @@ public class Lexer {
     public static int line = 1; // contador de linhas
     private char ch = ' '; // caractere lido do arquivo
     private FileReader file;
-    private Hashtable words = new Hashtable();
+    private Hashtable<String, Word> words = new Hashtable<String, Word>();
+
     private boolean EOF = false;
 
     /* Método para inserir palavras reservadas na HashTable */
@@ -14,10 +15,11 @@ public class Lexer {
     }
 
     public void printTabelaSimbolos() {
-        for (Enumeration<Object> keys = words.keys(); keys.hasMoreElements();) {
-            String key = (String) keys.nextElement();
-            Word word = (Word) words.get(key);
-            System.out.println(key);
+        Enumeration<String> keys = words.keys();
+        while (keys.hasMoreElements()) {
+            String lexeme = keys.nextElement();
+            Word word = words.get(lexeme);
+            System.out.println(lexeme);
         }
     }
 
