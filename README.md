@@ -2,7 +2,14 @@
 
 ## Trabalho compilador
 
-javac -d . *.java
-jar cvfm AnalisadorLexico.jar MANIFEST.MF *.class 
+Para executar:
+``````
+java -jar AnalisadorLexico.jar testes/1.txt
+```
 
-java -jar AnalisadorLexico.jar
+
+Para compilar:
+```
+javac *.java
+jar cvfm AnalisadorLexico.jar MANIFEST.MF *.class 
+```
