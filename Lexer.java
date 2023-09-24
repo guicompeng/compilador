@@ -71,6 +71,21 @@ public class Lexer {
         else return new Word(lexemaInvalido, Tag.INVALID_TOKEN);
     }
 
+    private Word erroStringNaoFoiFechada(String stringNaoFechada) throws IOException {
+        System.out.println("Erro léxico na linha " + line + ". String não foi fechada: " + stringNaoFechada);
+        return new Word(stringNaoFechada, Tag.INVALID_TOKEN);
+    }
+
+    private Word erroFloatMalFormado(String floatMalFormado) throws IOException {
+        System.out.println("Erro léxico na linha " + line + ". Float mal formado: " + floatMalFormado);
+        return new Word(floatMalFormado, Tag.INVALID_TOKEN);
+    }
+
+    private Word erroIntComeca0(String intComeca0) throws IOException {
+        System.out.println("Erro léxico na linha " + line + ". Int começa com 0: " + intComeca0);
+        return new Word(intComeca0, Tag.INVALID_TOKEN);
+    }
+
     public Token scan() throws IOException {        
         // Desconsidera delimitadores na entrada
         while (true) {
@@ -150,8 +165,9 @@ public class Lexer {
             case '"':
                 String str = "";
                 readch();
-                while(ch != '"') { // TODO: tambem deveria haver ch != '\n' ?
+                while(ch != '"') {
                     if(EOF) return Word.EOF;
+                    if(ch == '\n') return this.erroStringNaoFoiFechada(str);
                     str += ch;
                     readch();
                 }
@@ -188,12 +204,38 @@ public class Lexer {
         }
         // Números
         if (Character.isDigit(ch)) {
-            int value = 0;
-            do {
-                value = 10 * value + Character.digit(ch, 10);
+            String value = "";
+            // ler a parte inteira do digito
+            while (Character.isDigit(ch)) {
+                value += ch;
                 readch();
-            } while (Character.isDigit(ch));
-            return new Float(value);
+            }
+            // logo apos ler os digitos, se houver ponto, entao e float
+            if(ch == '.') {
+                value += ch; // inserir o . na string value
+                // apos o ponto, precisa haver pelo menos mais um digito
+                readch();
+                if(Character.isDigit(ch))  {
+                    // continua lendo enquanto for digito (na parte direita do .)
+                     while (Character.isDigit(ch)) {
+                        value += ch;
+                        readch();
+                    }
+                    return new Float(Double.parseDouble(value));
+                } else {
+                    return this.erroFloatMalFormado(value);
+                }
+            } 
+            // se nao houver ponto, entao e int
+            else {
+                // se for int, nao pode comecar com 0
+                if(value.length() > 1 && value.charAt(0) == '0') {
+                    return this.erroIntComeca0(value);
+                } else {
+                    return new Int(Integer.parseInt(value));
+                }
+            }
+            
         }
         // Identificadores
         if (Character.isLetter(ch)) {
@@ -201,7 +243,7 @@ public class Lexer {
             do {
                 sb.append(ch);
                 readch();
-            } while (Character.isLetterOrDigit(ch));
+            } while (Character.isLetterOrDigit(ch) || ch == '_');
             String s = sb.toString();
             Word w = (Word) words.get(s);
             if (w != null)
