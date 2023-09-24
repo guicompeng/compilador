@@ -3,6 +3,6 @@
 ## Trabalho compilador
 
 javac -d . *.java
-jar cvfm AnalisadorLexico.jar Manifest.txt *.class 
+jar cvfm AnalisadorLexico.jar MANIFEST.MF *.class 
 
 java -jar AnalisadorLexico.jar
