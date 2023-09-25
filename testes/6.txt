@@ -1,0 +1,11 @@
+classe Teste6
+int a, b, resultado;
+{
+    write("Digite o valor de a:");
+    read (a);
+    write("Digite o valor de b:");
+    read (b);
+    resultado = a + b;
+    write("A soma e: ");
+    write(resultado);
+}

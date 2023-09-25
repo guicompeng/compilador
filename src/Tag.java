@@ -1,6 +1,7 @@
 package src;
 public enum Tag {
     INVALID_TOKEN,
+    UNEXPECTED_EOF,
     END_OF_FILE,
     AND,
     OR,

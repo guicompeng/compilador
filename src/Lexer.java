@@ -97,6 +97,11 @@ public class Lexer {
         return new Word(intComeca0, Tag.INVALID_TOKEN);
     }
 
+    private Word erroEOFNaoEsperado() throws IOException {
+        System.out.println("Erro léxico na linha " + line + ". Fim de arquivo não era esperado");
+        return new Word("", Tag.UNEXPECTED_EOF);
+    }
+
     public Token scan() throws IOException {        
         // Desconsidera delimitadores na entrada
         while (true) {
@@ -155,7 +160,7 @@ public class Lexer {
                             readch();
                             break;
                         }
-                        if(EOF) return Word.EOF;
+                        if(EOF) return this.erroEOFNaoEsperado();
                         if(ch == '\n') line++;
                     }
                     return this.scan(); // chama recursivamente o proximo token
@@ -232,7 +237,7 @@ public class Lexer {
                         value += ch;
                         readch();
                     }
-                    return new Float(Double.parseDouble(value));
+                        return new Float(Double.parseDouble(value));
                 } else {
                     return this.erroFloatMalFormado(value);
                 }
