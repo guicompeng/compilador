@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.*;
 
 public class Lexer {
-    public static int line = 1; // contador de linhas
+    public int line = 1; // contador de linhas
     private char ch = ' '; // caractere lido do arquivo
     private FileReader file;
     private Hashtable<String, Word> words = new Hashtable<String, Word>();
