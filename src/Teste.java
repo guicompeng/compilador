@@ -16,10 +16,6 @@ public class Teste {
                 if (token != null)
                     System.out.printf("%-30s %-30s%n", token.getToken().toString(), token.getLexeme());
             } while (token.getToken() != Tag.END_OF_FILE);
-
-            // imprimir tabela de simbolos
-            System.out.println("\n\nTabela de simbolos:");
-            lexer.printTabelaSimbolos();
         }
 
     }

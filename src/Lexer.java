@@ -15,15 +15,6 @@ public class Lexer {
         words.put(w.getLexeme(), w); // lexema é a chave para entrada na HashTable
     }
 
-    public void printTabelaSimbolos() {
-        Enumeration<String> keys = words.keys();
-        while (keys.hasMoreElements()) {
-            String lexeme = keys.nextElement();
-            Word word = words.get(lexeme);
-            System.out.println(lexeme);
-        }
-    }
-
     /* Método construtor */
     public Lexer(String fileName) throws FileNotFoundException {
         try {
@@ -64,7 +55,7 @@ public class Lexer {
         return true;
     }
 
-    private Word erroTokenNaoEncontrado() throws IOException {
+    private void erroTokenNaoEncontrado() throws IOException {
         String lexemaInvalido = "";
 
         // Se o token nao for encontrado, todos caracteres para frente (ate achar um espaco em branco) sera considerado parte do token invalido
@@ -78,28 +69,27 @@ public class Lexer {
             }
         }
         System.out.println("Erro léxico na linha " + line + ". Lexema inválido: " + lexemaInvalido);
-        if(EOF) return Word.EOF;
-        else return new Word(lexemaInvalido, Tag.INVALID_TOKEN);
+        System.exit(0);
     }
 
-    private Word erroStringNaoFoiFechada(String stringNaoFechada) throws IOException {
+    private void erroStringNaoFoiFechada(String stringNaoFechada) throws IOException {
         System.out.println("Erro léxico na linha " + line + ". String não foi fechada: " + stringNaoFechada);
-        return new Word(stringNaoFechada, Tag.INVALID_TOKEN);
+        System.exit(0);
     }
 
-    private Word erroFloatMalFormado(String floatMalFormado) throws IOException {
+    private void erroFloatMalFormado(String floatMalFormado) throws IOException {
         System.out.println("Erro léxico na linha " + line + ". Float mal formado: " + floatMalFormado);
-        return new Word(floatMalFormado, Tag.INVALID_TOKEN);
+        System.exit(0);
     }
 
-    private Word erroIntComeca0(String intComeca0) throws IOException {
+    private void erroIntComeca0(String intComeca0) throws IOException {
         System.out.println("Erro léxico na linha " + line + ". Int começa com 0: " + intComeca0);
-        return new Word(intComeca0, Tag.INVALID_TOKEN);
+        System.exit(0);
     }
 
-    private Word erroEOFNaoEsperado() throws IOException {
+    private void erroEOFNaoEsperado() throws IOException {
         System.out.println("Erro léxico na linha " + line + ". Fim de arquivo não era esperado");
-        return new Word("", Tag.UNEXPECTED_EOF);
+        System.exit(0);
     }
 
     public Token scan() throws IOException {        
@@ -122,13 +112,13 @@ public class Lexer {
                 if (readch('&')) {
                     return Word.AND;
                 } else {
-                    return this.erroTokenNaoEncontrado();
+                    this.erroTokenNaoEncontrado();
                 }
             case '|':
                 if (readch('|'))
                     return Word.OR;
                 else {
-                    return this.erroTokenNaoEncontrado();
+                    this.erroTokenNaoEncontrado();
                 }
             case '=':
                 if (readch('='))
@@ -160,7 +150,7 @@ public class Lexer {
                             readch();
                             break;
                         }
-                        if(EOF) return this.erroEOFNaoEsperado();
+                        if(EOF) this.erroEOFNaoEsperado();
                         if(ch == '\n') line++;
                     }
                     return this.scan(); // chama recursivamente o proximo token
@@ -183,7 +173,7 @@ public class Lexer {
                 readch();
                 while(ch != '"') {
                     if(EOF) return Word.EOF;
-                    if(ch == '\n') return this.erroStringNaoFoiFechada(str);
+                    if(ch == '\n') this.erroStringNaoFoiFechada(str);
                     str += ch;
                     readch();
                 }
@@ -239,14 +229,14 @@ public class Lexer {
                     }
                         return new Float(Double.parseDouble(value));
                 } else {
-                    return this.erroFloatMalFormado(value);
+                    this.erroFloatMalFormado(value);
                 }
             } 
             // se nao houver ponto, entao e int
             else {
                 // se for int, nao pode comecar com 0
                 if(value.length() > 1 && value.charAt(0) == '0') {
-                    return this.erroIntComeca0(value);
+                    this.erroIntComeca0(value);
                 } else {
                     return new Int(Integer.parseInt(value));
                 }
@@ -269,6 +259,7 @@ public class Lexer {
             return w;
         }
         
-        return this.erroTokenNaoEncontrado();
+        this.erroTokenNaoEncontrado();
+        return null;
     }
 }
