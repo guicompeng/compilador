@@ -19,14 +19,14 @@ public enum Tag {
     WRITE,
 
     // Operadores e pontuação
-    SEMICOLON,
-    COMMA,
-    OPEN_ROUND_BRACKET,
-    CLOSE_ROUND_BRACKET,
-    OPEN_CURLY_BRACKET,
-    CLOSE_CURLY_BRACKET,
+    SEMICOLON, // ;
+    COMMA, // ,
+    OPEN_ROUND_BRACKET, // (
+    CLOSE_ROUND_BRACKET, // )
+    OPEN_CURLY_BRACKET, // {
+    CLOSE_CURLY_BRACKET, // }
     ASSIGN,
-    NOT,
+    NOT, // !
     LESS,
     GREATER,
     EQUAL,
