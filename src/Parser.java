@@ -23,6 +23,7 @@ public class Parser {
 
     private static void error() throws IOException {
         System.out.println("Erro sintático na linha " + lexer.line);
+        System.out.println("Causado por: lexema não esperado: " + tok.getLexeme());
         System.exit(0);
     }
 
@@ -112,12 +113,16 @@ public class Parser {
                 break;
             case IF: // if-stmt
                 ifStmt();
+                break;
             case DO: // do-stmt
                 doStmt();
+                break;
             case READ: // read-stmt
                 readStmt();
+                break;
             case WRITE: // write-stmt
                 writeStmt();
+                break;
             default:
                 error();
         }
@@ -255,10 +260,12 @@ public class Parser {
             case ID:
                 eat(Tag.ID);
                 break;
-            // TODO
-            // case CONST:
-            // eat(Tag.CONST);
-            // break;
+            // const pode ser int, float ou literal
+            case INT:
+            case FLOAT:
+            case LITERAL:
+                advance();
+                break;
             case OPEN_ROUND_BRACKET:
                 eat(Tag.OPEN_ROUND_BRACKET);
                 expression();
@@ -283,7 +290,7 @@ public class Parser {
     // addop ::= "+" | "-" | "||"
     private static void addop() throws IOException {
         Tag t = tok.getToken();
-        if (t == Tag.OP_SUM || t == Tag.OP_SUB || t == Tag.OR ) {
+        if (t == Tag.OP_SUM || t == Tag.OP_SUB || t == Tag.OR) {
             advance();
         } else {
             error();
@@ -293,7 +300,7 @@ public class Parser {
     // mulop ::= "*" | "/" | "&&"
     private static void mulop() throws IOException {
         Tag t = tok.getToken();
-        if (t == Tag.OP_MUL || t == Tag.OP_DIV || t == Tag.AND ) {
+        if (t == Tag.OP_MUL || t == Tag.OP_DIV || t == Tag.AND) {
             advance();
         } else {
             error();
