@@ -66,6 +66,7 @@ public class Parser {
     private static void identList() throws IOException {
         eat(Tag.ID);
         if (tok.getToken() == Tag.COMMA) {
+            eat(Tag.COMMA);
             identList();
         }
     }
