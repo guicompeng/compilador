@@ -26,6 +26,7 @@ public class Lexer {
         // Insere palavras reservadas na HashTable
         reserve(new Word("class", Tag.CLASS));
         reserve(new Word("if", Tag.IF));
+        reserve(new Word("else", Tag.ELSE));
         reserve(new Word("int", Tag.INT));
         reserve(new Word("float", Tag.FLOAT));
         reserve(new Word("string", Tag.STRING));

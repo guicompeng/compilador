@@ -203,13 +203,15 @@ public class Parser {
 
     // expression ::= simple-expr | simple-expr relop simple-expr
     private static void expression() throws IOException {
-        Tag t = tok.getToken();
         simpleExpr();
+        Tag t = tok.getToken();
         // first do relop: ">" | ">=" | "<" | "<=" | "!=" | "=="
         if (t == Tag.GREATER || t == Tag.GREATER_EQUAL || t == Tag.LESS || t == Tag.LESS_EQUAL || t == Tag.NOT_EQUAL
                 || t == Tag.EQUAL) {
             relop();
+            System.out.println("a?" + tok.getToken());
             simpleExpr();
+            System.out.println("b?" + tok.getToken());
         }
     }
 
