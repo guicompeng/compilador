@@ -7,7 +7,6 @@ Para executar:
 java -jar AnalisadorLexico.jar testes/1.txt
 ```
 
-
 Para compilar:
 ```
 javac src/*.java
