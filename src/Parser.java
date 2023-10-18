@@ -17,6 +17,7 @@ public class Parser {
             lexer = new Lexer(fileName);
             advance();
             program();
+            System.out.println("Sintático: ok");
         }
 
     }
@@ -131,7 +132,7 @@ public class Parser {
     // identifier "=" simple-expr
     private static void assignStmt() throws IOException {
         eat(Tag.ID);
-        eat(Tag.EQUAL);
+        eat(Tag.ASSIGN);
         simpleExpr();
     }
 
@@ -204,7 +205,6 @@ public class Parser {
     private static void expression() throws IOException {
         Tag t = tok.getToken();
         simpleExpr();
-
         // first do relop: ">" | ">=" | "<" | "<=" | "!=" | "=="
         if (t == Tag.GREATER || t == Tag.GREATER_EQUAL || t == Tag.LESS || t == Tag.LESS_EQUAL || t == Tag.NOT_EQUAL
                 || t == Tag.EQUAL) {

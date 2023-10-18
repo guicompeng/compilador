@@ -25,11 +25,11 @@ public enum Tag {
     CLOSE_ROUND_BRACKET, // )
     OPEN_CURLY_BRACKET, // {
     CLOSE_CURLY_BRACKET, // }
-    ASSIGN,
+    ASSIGN, // =
     NOT, // !
     LESS,
     GREATER,
-    EQUAL,
+    EQUAL, // ==
     NOT_EQUAL,
     LESS_EQUAL,
     GREATER_EQUAL,
