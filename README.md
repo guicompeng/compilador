@@ -4,7 +4,7 @@
 
 Para executar:
 ```
-java -jar AnalisadorSintatico.jar testes/1.txt
+java -jar AnalisadorSintatico.jar testes/1-corrigido-sintatico.txt
 ```
 
 Para compilar:
