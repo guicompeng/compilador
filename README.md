@@ -4,6 +4,11 @@
 
 Para executar:
 ```
+java -jar AnalisadorSintatico.jar [file-path]
+```
+
+Exemplo:
+```
 java -jar AnalisadorSintatico.jar testes/1-corrigido-sintatico.txt
 ```
 
