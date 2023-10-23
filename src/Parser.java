@@ -8,13 +8,14 @@ public class Parser {
 
     private static Lexer lexer;
     private static Token tok;
-
+    private static SymbolTable symbolTable;
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
             System.out.println("Por favor, forneça o nome do arquivo como parâmetro.");
         } else {
             String fileName = args[0];
             lexer = new Lexer(fileName);
+            symbolTable = new SymbolTable();
             advance();
             program();
             System.out.println("Sintático: ok");
@@ -140,8 +141,10 @@ public class Parser {
     private static void ifStmt() throws IOException {
         eat(Tag.IF);
         eat(Tag.OPEN_ROUND_BRACKET);
+        symbolTable.blockInput();  // entrada do bloco: atualizar nível da tabela de simbolos
         condition();
         eat(Tag.CLOSE_ROUND_BRACKET);
+        symbolTable.blockOutput();  // saida do bloco: atualizar nível da tabela de simbolos
         eat(Tag.OPEN_CURLY_BRACKET);
         stmtList();
         eat(Tag.CLOSE_CURLY_BRACKET);
@@ -153,8 +156,10 @@ public class Parser {
         if (tok.getToken() == Tag.ELSE) {
             eat(Tag.ELSE);
             eat(Tag.OPEN_CURLY_BRACKET);
+            symbolTable.blockInput();  // entrada do bloco: atualizar nível da tabela de simbolos
             stmtList();
             eat(Tag.CLOSE_CURLY_BRACKET);
+            symbolTable.blockOutput();  // saida do bloco: atualizar nível da tabela de simbolos
         }
     }
 
@@ -167,8 +172,10 @@ public class Parser {
     private static void doStmt() throws IOException {
         eat(Tag.DO);
         eat(Tag.OPEN_CURLY_BRACKET);
+        symbolTable.blockInput();  // entrada do bloco: atualizar nível da tabela de simbolos
         stmtList();
         eat(Tag.CLOSE_CURLY_BRACKET);
+        symbolTable.blockOutput();  // saida do bloco: atualizar nível da tabela de simbolos
         doSuffix();
     }
 
