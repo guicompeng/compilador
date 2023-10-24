@@ -40,8 +40,13 @@ public class Parser {
             error();
     }
 
-    // class identifier [decl-list] body
     private static void program() throws IOException {
+        programAux();
+        eat(Tag.END_OF_FILE);
+    }
+
+    // class identifier [decl-list] body
+    private static void programAux() throws IOException {
         eat(Tag.CLASS);
         eat(Tag.ID);
         if (tok.getToken() != Tag.OPEN_CURLY_BRACKET) {
