@@ -221,9 +221,7 @@ public class Parser {
         if (t == Tag.GREATER || t == Tag.GREATER_EQUAL || t == Tag.LESS || t == Tag.LESS_EQUAL || t == Tag.NOT_EQUAL
                 || t == Tag.EQUAL) {
             relop();
-            System.out.println("a?" + tok.getToken());
             simpleExpr();
-            System.out.println("b?" + tok.getToken());
         }
     }
 
