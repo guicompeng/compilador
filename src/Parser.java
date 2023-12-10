@@ -35,6 +35,13 @@ public class Parser {
         System.exit(0);
     }
 
+    private static void checkIdWasDeclared(String lexemeId) throws IOException {
+        RowSymbolTable rst = symbolTable.findRow(lexemeId);
+        if(rst == null) {
+            semanticError("\"" + lexemeId + "\"" + " não foi declarado");
+        }
+    }
+
     private static void advance() throws IOException {
         tok = lexer.scan(); // lê próximo token
     }
@@ -150,10 +157,7 @@ public class Parser {
 
     // identifier "=" simple-expr
     private static void assignStmt() throws IOException {
-        RowSymbolTable rst = symbolTable.findRow(tok.getLexeme());
-        if(rst == null) {
-            semanticError("\"" + tok.getLexeme()+ "\"" + " não foi declarado");
-        }
+        checkIdWasDeclared(tok.getLexeme());
         eat(Tag.ID);
         eat(Tag.ASSIGN);
         simpleExpr();
@@ -213,6 +217,7 @@ public class Parser {
     private static void readStmt() throws IOException {
         eat(Tag.READ);
         eat(Tag.OPEN_ROUND_BRACKET);
+        checkIdWasDeclared(tok.getLexeme());
         eat(Tag.ID);
         eat(Tag.CLOSE_ROUND_BRACKET);
     }
@@ -287,6 +292,7 @@ public class Parser {
     private static void factor() throws IOException {
         switch (tok.getToken()) {
             case ID:
+                checkIdWasDeclared(tok.getLexeme());
                 eat(Tag.ID);
                 break;
             // const pode ser int, float ou literal
