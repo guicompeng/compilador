@@ -1,6 +1,5 @@
 package src;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Parser {
@@ -9,6 +8,7 @@ public class Parser {
     private static Lexer lexer;
     private static Token tok;
     private static SymbolTable symbolTable;
+    private static IDTypes curType = null;
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
             System.out.println("Por favor, forneça o nome do arquivo como parâmetro.");
@@ -26,6 +26,12 @@ public class Parser {
     private static void error() throws IOException {
         System.out.println("Erro sintático na linha " + lexer.line);
         System.out.println("Causado por: lexema não esperado: " + tok.getLexeme());
+        System.exit(0);
+    }
+
+    private static void semanticError(String causedBy) throws IOException {
+        System.out.println("Erro semântico na linha " + lexer.line);
+        System.out.println("Causado por: " + causedBy);
         System.exit(0);
     }
 
@@ -72,6 +78,10 @@ public class Parser {
 
     // identifier {"," identifier}
     private static void identList() throws IOException {
+        // inserir identificador na tabela de simbolos
+        RowSymbolTable rst = new RowSymbolTable(tok.getLexeme(), symbolTable.getCountLevel(), curType);
+        symbolTable.insertRowSymbolTable(rst);
+
         eat(Tag.ID);
         if (tok.getToken() == Tag.COMMA) {
             eat(Tag.COMMA);
@@ -84,12 +94,15 @@ public class Parser {
         switch (tok.getToken()) {
             case INT:
                 eat(Tag.INT);
+                curType = IDTypes.INT;
                 break;
             case STRING:
                 eat(Tag.STRING);
+                curType = IDTypes.STRING;
                 break;
             case FLOAT:
                 eat(Tag.FLOAT);
+                curType = IDTypes.FLOAT;
                 break;
             default:
                 error();
@@ -137,6 +150,10 @@ public class Parser {
 
     // identifier "=" simple-expr
     private static void assignStmt() throws IOException {
+        RowSymbolTable rst = symbolTable.findRow(tok.getLexeme());
+        if(rst == null) {
+            semanticError("\"" + tok.getLexeme()+ "\"" + " não foi declarado");
+        }
         eat(Tag.ID);
         eat(Tag.ASSIGN);
         simpleExpr();

@@ -1,11 +1,7 @@
 package src;
 
 public class RowSymbolTable {
-    public enum IDTypes {
-        INT,
-        FLOAT,
-        STRING
-    }
+
 
     private String lexeme;
     private int level;
