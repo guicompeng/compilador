@@ -1,0 +1,20 @@
+class Teste4
+// Outro programa de teste
+int idade, total;
+float i, k, j;
+string nome, texto, sobrenome;
+{
+    write("Digite o seu nome: ");
+    read(nome);
+    write("Digite o seu sobrenome");
+    read(sobrenome);
+    write("Digite a sua idade: ");
+    read (idade);
+    k = i * (5.0-i * 50.0 / 10.0);
+    j = i * 10.0;
+    k = i * j / k;
+    texto = nome + " " + sobrenome + ", os números gerados sao: ";
+    write (texto);
+    write(j);
+    write(k);
+}

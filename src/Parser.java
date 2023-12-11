@@ -18,7 +18,7 @@ public class Parser {
             symbolTable = new SymbolTable();
             advance();
             program();
-            System.out.println("Sintático: ok");
+            System.out.println("Semântico: ok");
         }
 
     }

@@ -1,0 +1,12 @@
+class Teste6
+int peso, altura;
+float resultado;
+{
+    write("Digite o peso:");
+    read (peso);
+    write("Digite a altura:");
+    read (altura);
+    resultado = peso/(altura*altura);
+    write("O IMC e: ");
+    write(resultado);
+}
