@@ -158,9 +158,15 @@ public class Parser {
     // identifier "=" simple-expr
     private static void assignStmt() throws IOException {
         checkIdWasDeclared(tok.getLexeme());
+        RowSymbolTable rst = symbolTable.findRow(tok.getLexeme());
+
         eat(Tag.ID);
         eat(Tag.ASSIGN);
-        simpleExpr();
+        IDTypes typeSimpleExprt = simpleExpr();
+        // check se a variavel na esquerda (antes do = ) é igual ao tipo resultante na direita (simpleExpr)
+        if(rst.getType() != typeSimpleExprt) {
+            semanticError("Tipos incompatíveis. A variável " + rst.getLexeme() + " foi declarada com o tipo " + rst.getType() + " mas o tipo a direita do '=' é " + typeSimpleExprt);
+        }
     }
 
     // if-stmt ::= if "(" condition ")" "{" stmt-list "}" else-stmt
@@ -236,78 +242,132 @@ public class Parser {
     }
 
     // expression ::= simple-expr | simple-expr relop simple-expr
-    private static void expression() throws IOException {
-        simpleExpr();
+    private static IDTypes expression() throws IOException {
+        IDTypes localType = simpleExpr();
         Tag t = tok.getToken();
         // first do relop: ">" | ">=" | "<" | "<=" | "!=" | "=="
         if (t == Tag.GREATER || t == Tag.GREATER_EQUAL || t == Tag.LESS || t == Tag.LESS_EQUAL || t == Tag.NOT_EQUAL
                 || t == Tag.EQUAL) {
             relop();
             simpleExpr();
+            // As operações de comparação resultam em valor lógico (verdadeiro ou falso)
+            localType = IDTypes.BOOLEAN;
         }
+        return localType;
     }
 
     // simple-expr ::= term simple-expr-aux
-    private static void simpleExpr() throws IOException {
-        term();
-        simpleExprAux();
+    private static IDTypes simpleExpr() throws IOException {     
+        IDTypes localType = term();
+        IDTypes localType2 = simpleExprAux();
+        if(localType2 != null && localType != localType2) {
+            semanticError("Há tipos incompatíveis nessa expressão (" + localType + " com " + localType2 + ")");
+        }
+        return localType;
     }
 
     // simple-expr-aux ::= addop term simple-expr-aux | λ
-    private static void simpleExprAux() throws IOException {
+    private static IDTypes simpleExprAux() throws IOException {
+        IDTypes resultType = null;
         Tag t = tok.getToken();
         if (t == Tag.OP_SUM || t == Tag.OP_SUB || t == Tag.OR) { // first do addop é: "+" | "-" | "||"
             addop();
-            term();
-            simpleExprAux();
+            IDTypes localType = term();
+            IDTypes localType2 = simpleExprAux();
+            if(localType2 != null && localType != localType2) {
+                semanticError("Há tipos incompatíveis nessa expressão (" + localType + " com " + localType2 + ")");
+            }
+            resultType = localType;
+        }
+        return resultType;
+    }
+
+    private static class ReducaoTermAux {
+        public IDTypes type;
+        public Tag op;
+        public ReducaoTermAux(IDTypes type, Tag op) {
+            this.type = type;
+            this.op = op;
         }
     }
 
     // term ::= factor-a term-aux
-    private static void term() throws IOException {
-        factorA();
-        termAux();
+    private static IDTypes term() throws IOException {
+        IDTypes localType = factorA();
+        ReducaoTermAux localReducao = termAux();
+        if(localReducao.type != null && localType != localReducao.type) {
+            semanticError("Há tipos incompatíveis nessa expressão (" + localType + " com " + localReducao.type + ")");
+        }
+        // se for divisao, resultado é float, se "&&" é booleano
+        IDTypes resultType = null;
+        if(localReducao.op == Tag.OP_DIV) {
+            resultType = IDTypes.FLOAT;
+        } else if(localReducao.op == Tag.AND) {
+            resultType = IDTypes.BOOLEAN;
+        } else {
+            resultType = localType;
+        }
+        return resultType;
     }
 
     // term-aux ::= mulop factor-a term-aux | λ
-    private static void termAux() throws IOException {
+    private static ReducaoTermAux termAux() throws IOException {
+        IDTypes resultType = null;
         Tag t = tok.getToken();
         if (t == Tag.OP_MUL || t == Tag.OP_DIV || t == Tag.AND) { // first do mulop é: "*" | "/" | "&&"
             mulop();
-            factorA();
-            termAux();
+            IDTypes localType = factorA();
+            ReducaoTermAux localReducao = termAux();
+            if(localReducao.type != null && localType != localReducao.type) {
+                semanticError("Há tipos incompatíveis nessa expressão (" + localType + " com " + localReducao.type + ")");
+            }
+            // se for divisao, resultado é float, se "&&" é booleano
+            if(localReducao.op == Tag.OP_DIV) {
+                resultType = IDTypes.FLOAT;
+            } else if(localReducao.op == Tag.AND) {
+                resultType = IDTypes.BOOLEAN;
+            } else {
+                resultType = localType;
+            }
         }
+        return new ReducaoTermAux(resultType, t);
     }
 
     // factor-a ::= factor | "!" factor | "-" factor
-    private static void factorA() throws IOException {
+    private static IDTypes factorA() throws IOException {
         Tag t = tok.getToken();
         if (t == Tag.NOT || t == Tag.OP_SUB) {
             advance();
         }
-        factor();
+        return factor();
     }
 
     // factor ::= identifier | constant | "(" expression ")"
-    private static void factor() throws IOException {
+    private static IDTypes factor() throws IOException {
         switch (tok.getToken()) {
             case ID:
                 checkIdWasDeclared(tok.getLexeme());
+                IDTypes localType = symbolTable.findRow(tok.getLexeme()).getType();
                 eat(Tag.ID);
-                break;
+                return localType;
             // const pode ser int, float ou literal
             case INT:
+                advance();
+                return IDTypes.INT;
             case FLOAT:
+                advance();
+                return IDTypes.FLOAT;
             case LITERAL:
                 advance();
-                break;
+                return IDTypes.STRING;
             case OPEN_ROUND_BRACKET:
                 eat(Tag.OPEN_ROUND_BRACKET);
-                expression();
+                IDTypes localAuxType = expression();
                 eat(Tag.CLOSE_ROUND_BRACKET);
-                break;
+                return localAuxType;
             default:
                 error();
+                return IDTypes.INT; // nao faz diferenca esse return, pois o error() ja vai encerrar o programa
         }
     }
 
