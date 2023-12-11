@@ -4,16 +4,16 @@
 
 Para executar:
 ```
-java -jar AnalisadorSintatico.jar [file-path]
+java -jar AnalisadorSemantico.jar [file-path]
 ```
 
 Exemplo:
 ```
-java -jar AnalisadorSintatico.jar testes/1-corrigido-sintatico.txt
+java -jar AnalisadorSemantico.jar testes/1-corrigido-semantico.txt
 ```
 
 Para compilar:
 ```
 javac src/*.java
-jar cvfm AnalisadorSintatico.jar MANIFEST.MF src/*.class 
+jar cvfm AnalisadorSemantico.jar MANIFEST.MF src/*.class 
 ```
